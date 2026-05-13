@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mago & Lasso Health Diary</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#fdf8f3;min-height:100vh;padding:1rem}
+:root{--brown:#7a4f2e;--brown-light:#c49a72;--sand:#f0e8da;--border:#e0d0be;--white:#fff;--text:#3a2a1a;--muted:#8a7060}
+#app{max-width:500px;margin:0 auto;padding:0.5rem 0 2rem}
+.header{text-align:center;padding:1rem 0 0.5rem}
+.header h1{font-size:1.5rem;font-weight:700;color:var(--brown)}
+.header p{font-size:0.82rem;color:var(--muted);margin-top:3px}
+.lang-toggle{display:flex;justify-content:center;margin-bottom:0.8rem}
+.lang-btn{background:none;border:1.5px solid var(--border);padding:5px 14px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;color:var(--muted);transition:all .15s}
+.lang-btn:first-child{border-radius:8px 0 0 8px}
+.lang-btn:last-child{border-radius:0 8px 8px 0;border-left:none}
+.lang-btn.active{background:var(--brown);color:#fff;border-color:var(--brown)}
+.dog-tabs{display:flex;gap:8px;justify-content:center;margin:0.8rem 0}
+.dog-tab{flex:1;max-width:160px;padding:10px 8px;border-radius:14px;border:2px solid var(--border);background:var(--white);cursor:pointer;text-align:center;transition:all .2s}
+.dog-tab.active{border-color:var(--brown);background:var(--sand)}
+.dog-tab .avi{width:50px;height:50px;border-radius:50%;background:var(--sand);border:2px solid var(--border);margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.dog-tab .dname{font-weight:700;font-size:0.9rem;color:var(--brown)}
+.dog-tab .breed{font-size:0.72rem;color:var(--muted)}
+.month-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:1rem}
+.month-nav button{background:none;border:1.5px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1.1rem;color:var(--brown)}
+.month-nav button:hover{background:var(--sand)}
+.month-label{font-weight:700;font-size:1rem;color:var(--brown);min-width:130px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.acard{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;position:relative}
+.acard .icon{font-size:1.4rem;margin-bottom:2px}
+.acard .aname{font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3}
+.acard .cnt{font-size:1.3rem;font-weight:700;color:var(--brown)}
+.acard .unit{font-size:0.7rem;color:var(--muted)}
+.acard .dbtn{position:absolute;top:4px;right:5px;background:none;border:none;cursor:pointer;font-size:0.8rem;color:var(--muted);opacity:0.5}
+.acard .dbtn:hover{opacity:1;color:#b85454}
+.section{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:1rem}
+.section h3{font-size:0.85rem;font-weight:700;color:var(--brown);margin-bottom:8px}
+.log-entry{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--border);font-size:0.8rem}
+.log-entry:last-child{border-bottom:none}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--brown-light);flex-shrink:0}
+.log-date{color:var(--muted);min-width:76px}
+.log-act{font-weight:600;flex:1}
+.ldel{background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.8rem}
+.ldel:hover{color:#b85454}
+.empty{text-align:center;color:var(--muted);font-size:0.8rem;padding:12px 0}
+.add-box{background:var(--sand);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:1rem}
+.tabs2{display:flex;gap:6px;margin-bottom:10px}
+.t2{flex:1;padding:6px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);cursor:pointer;font-size:0.78rem;font-weight:600;color:var(--muted);text-align:center;font-family:'Nunito',sans-serif}
+.t2.active{border-color:var(--brown);color:var(--brown);background:var(--sand)}
+.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.row select,.row input{flex:1;min-width:90px;padding:7px 9px;border:1.5px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:'Nunito',sans-serif;background:var(--white);color:var(--text)}
+.btn{background:var(--brown);color:var(--white);border:none;border-radius:8px;padding:8px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap}
+.btn:hover{background:#5c3820}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.emojis{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.ebtn{background:none;border:1.5px solid var(--border);border-radius:6px;padding:3px 6px;cursor:pointer;font-size:1rem}
+.ebtn.sel{border-color:var(--brown);background:var(--white)}
+.loading{text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--brown);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--brown);color:#fff;padding:8px 20px;border-radius:20px;font-size:0.82rem;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <h1>🐾 Mago & Lasso</h1>
+    <p id="subtitle"></p>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+    <button class="lang-btn" id="btnEN" onclick="setLang('en')">English</button>
+  </div>
+  <div class="dog-tabs" id="dogTabs"></div>
+  <div class="month-nav">
+    <button id="prevM">‹</button>
+    <span class="month-label" id="monthLbl"></span>
+    <button id="nextM">›</button>
+  </div>
+  <div id="main"><div class="loading"><span class="spinner"></span><span id="loadingTxt"></span></div></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbwnJvMMbSTpb3hraYE8DT2dwSeU6tSrXkMVm5LuQcZYt599_HaYDhDUIIDnGqdBvXRn-g/exec';
+const EMOJIS=['🛁','💊','🦷','✂️','💉','🌿','🎽','🏥','🧴','🐾','💧','🩺','🎀','🥩','🦮'];
+const T={zh:{subtitle:'家人共用記錄',breed:'德國牧羊犬',loading:'載入中...',thisMonth:'本月記錄',noLog:'本月未有記錄',logTab:'記錄活動',newTab:'新增活動類別',record:'✓ 記錄',addAct:'新增',selectDate:'請選擇日期',enterName:'請輸入活動名稱',saved:'✓ 已記錄！',actAdded:'✓ 已新增活動！',deleted:'已刪除',error:'錯誤，請重試',confirmLog:'刪除這條記錄？',confirmAct:'確定刪除此活動類別？',times:'次',months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],yearFmt:(y,m)=>y+'年 '+m,loadFail:'載入失敗，請重試 😢'},en:{subtitle:'Shared family tracker',breed:'German Shepherd',loading:'Loading...',thisMonth:'This month',noLog:'No records this month',logTab:'Log activity',newTab:'Add activity type',record:'✓ Log',addAct:'Add',selectDate:'Please select a date',enterName:'Please enter a name',saved:'✓ Logged!',actAdded:'✓ Activity added!',deleted:'Deleted',error:'Error, please try again',confirmLog:'Delete this record?',confirmAct:'Delete this activity type?',times:'x',months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],yearFmt:(y,m)=>m+' '+y,loadFail:'Failed to load, please retry 😢'}};
+const DA={brush:{zh:'刷牙',en:'Teeth Brushing'},deworm:{zh:'吃驅蟲藥',en:'Deworming'},bath:{zh:'洗澡',en:'Bath'}};
+let lang='zh',dog='mago',now=new Date(),year=now.getFullYear(),month=now.getMonth(),activities=[],logs=[],selEmoji='🐾',tab='log',busy=false;
+function t(){return T[lang]}
+function mkey(){return year+'-'+(month+1)}
+function myLogs(){return logs.filter(l=>l[0]===dog&&l[1]===mkey())}
+function actLabel(a){if(DA[a[0]])return DA[a[0]][lang];if(a[1]&&a[1].includes('|')){const p=a[1].split('|');return lang==='zh'?p[0]:p[1]}return a[1]}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2000)}
+async function get(action){const r=await fetch(API+'?action='+action);return r.json()}
+async function post(body){const r=await fetch(API,{method:'POST',body:JSON.stringify(body)});return r.json()}
+async function load(){document.getElementById('loadingTxt').textContent=t().loading;document.getElementById('main').innerHTML='<div class="loading"><span class="spinner"></span>'+t().loading+'</div>';try{[activities,logs]=await Promise.all([get('getActivities'),get('getLogs')]);render()}catch(e){document.getElementById('main').innerHTML='<div class="empty">'+t().loadFail+'</div>'}}
+function setLang(l){lang=l;document.getElementById('btnZH').className='lang-btn'+(l==='zh'?' active':'');document.getElementById('btnEN').className='lang-btn'+(l==='en'?' active':'');render()}
+function render(){
+  document.getElementById('subtitle').textContent=t().subtitle;
+  document.getElementById('monthLbl').textContent=t().yearFmt(year,t().months[month]);
+  const dogs=[{id:'mago',icon:'🟤',name:'Mago'},{id:'lasso',icon:'🟠',name:'Lasso'}];
+  document.getElementById('dogTabs').innerHTML=dogs.map(d=>`<div class="dog-tab ${dog===d.id?'active':''}" onclick="setDog('${d.id}')"><div class="avi">${d.icon}</div><div class="dname">${d.name}</div><div class="breed">${t().breed}</div></div>`).join('');
+  const ml=myLogs();let html='<div class="grid">';
+  activities.forEach(a=>{const cnt=ml.filter(l=>l[2]===a[0]).length;html+=`<div class="acard"><button class="dbtn" onclick="delAct('${a[0]}')">✕</button><div class="icon">${a[2]}</div><div class="aname">${actLabel(a)}</div><div class="cnt">${cnt}<span class="unit"> ${t().times}</span></div></div>`;});
+  html+='</div>';
+  html+=`<div class="section"><h3>📋 ${t().thisMonth}</h3>`;
+  const sorted=ml.slice().sort((a,b)=>b[3]<a[3]?-1:1);
+  if(!sorted.length){html+=`<div class="empty">${t().noLog}</div>`;}
+  else{sorted.forEach(l=>{const act=activities.find(a=>a[0]===l[2])||['','?','🐾'];const idx=logs.findIndex(x=>x[0]===l[0]&&x[1]===l[1]&&x[2]===l[2]&&x[3]===l[3]);html+=`<div class="log-entry"><span class="dot"></span><span class="log-date">${l[3]}</span><span class="log-act">${act[2]} ${actLabel(act)}</span><button class="ldel" onclick="delLog(${idx})">✕</button></div>`;});}
+  html+='</div>';
+  html+=`<div class="add-box"><div class="tabs2"><div class="t2 ${tab==='log'?'active':''}" onclick="switchTab('log')">${t().logTab}</div><div class="t2 ${tab==='new'?'active':''}" onclick="switchTab('new')">${t().newTab}</div></div>`;
+  if(tab==='log'){const opts=activities.map(a=>`<option value="${a[0]}">${a[2]} ${actLabel(a)}</option>`).join('');const today=new Date().toISOString().split('T')[0];html+=`<div class="row"><select id="selAct">${opts}</select><input type="date" id="inDate" value="${today}"><button class="btn" id="addBtn" onclick="addLog()">${t().record}</button></div>`;}
+  else{html+=`<div class="row"><input type="text" id="newZH" placeholder="中文名稱" maxlength="20"><input type="text" id="newEN" placeholder="English name" maxlength="20"><button class="btn" id="addActBtn" onclick="addAct()">${t().addAct}</button></div><div class="emojis">`;EMOJIS.forEach(e=>{html+=`<button class="ebtn ${selEmoji===e?'sel':''}" onclick="pickEmoji('${e}')">${e}</button>`;});html+='</div>';}
+  html+='</div>';
+  document.getElementById('main').innerHTML=html;
+}
+function setDog(d){dog=d;render()}
+function switchTab(tb){tab=tb;render()}
+function pickEmoji(e){selEmoji=e;render()}
+document.getElementById('prevM').onclick=()=>{if(month===0){month=11;year--;}else month--;render()};
+document.getElementById('nextM').onclick=()=>{if(month===11){month=0;year++;}else month++;render()};
+async function addLog(){const act=document.getElementById('selAct').value;const date=document.getElementById('inDate').value;if(!date){toast(t().selectDate);return}if(busy)return;busy=true;document.getElementById('addBtn').disabled=true;try{await post({action:'addLog',dog,month:mkey(),act,date});logs.push([dog,mkey(),act,date]);toast(t().saved);render()}catch(e){toast(t().error)}busy=false}
+async function delLog(idx){if(!confirm(t().confirmLog))return;const l=logs[idx];try{await post({action:'deleteLog',dog:l[0],month:l[1],act:l[2],date:l[3]});logs.splice(idx,1);toast(t().deleted);render()}catch(e){toast(t().error)}}
+async function addAct(){const zh=document.getElementById('newZH').value.trim();const en=document.getElementById('newEN').value.trim();if(!zh&&!en){toast(t().enterName);return}if(busy)return;busy=true;document.getElementById('addActBtn').disabled=true;const id='act_'+Date.now();const name=zh&&en?zh+'|'+en:(zh||en);try{await post({action:'addActivity',id,name,icon:selEmoji});activities.push([id,name,selEmoji]);toast(t().actAdded);tab='log';render()}catch(e){toast(t().error)}busy=false}
+async function delAct(id){if(!confirm(t().confirmAct))return;try{await post({action:'deleteActivity',id});activities=activities.filter(a=>a[0]!==id);toast(t().deleted);render()}catch(e){toast(t().error)}}
+load();
+</script>
+</body>
+</html>
